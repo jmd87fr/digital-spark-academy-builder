@@ -9,7 +9,182 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      achats: {
+        Row: {
+          date_achat: string | null
+          ebook_id: string | null
+          formation_format_id: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          date_achat?: string | null
+          ebook_id?: string | null
+          formation_format_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          date_achat?: string | null
+          ebook_id?: string | null
+          formation_format_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      ebook: {
+        Row: {
+          catégorie: string | null
+          description: string | null
+          id: string
+          prix: number | null
+          titre: string | null
+        }
+        Insert: {
+          catégorie?: string | null
+          description?: string | null
+          id?: string
+          prix?: number | null
+          titre?: string | null
+        }
+        Update: {
+          catégorie?: string | null
+          description?: string | null
+          id?: string
+          prix?: number | null
+          titre?: string | null
+        }
+        Relationships: []
+      }
+      ebook_formats: {
+        Row: {
+          "ebook-id": string | null
+          format_fichier: string
+          id: string
+          URL_fichier: string | null
+        }
+        Insert: {
+          "ebook-id"?: string | null
+          format_fichier?: string
+          id?: string
+          URL_fichier?: string | null
+        }
+        Update: {
+          "ebook-id"?: string | null
+          format_fichier?: string
+          id?: string
+          URL_fichier?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ebook_formats_ebook-id_fkey"
+            columns: ["ebook-id"]
+            isOneToOne: false
+            referencedRelation: "ebook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      formations: {
+        Row: {
+          description: string | null
+          id: string
+          image_url: string | null
+          objectif: string | null
+          public_cible: string | null
+          theme: string | null
+          titre: string | null
+          video_teaser: string | null
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          objectif?: string | null
+          public_cible?: string | null
+          theme?: string | null
+          titre?: string | null
+          video_teaser?: string | null
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          objectif?: string | null
+          public_cible?: string | null
+          theme?: string | null
+          titre?: string | null
+          video_teaser?: string | null
+        }
+        Relationships: []
+      }
+      formations_formats: {
+        Row: {
+          format_fichier: string
+          "formation-id": string | null
+          id: string
+          intitule_format: string | null
+          lien_moodle: string | null
+          prix: number | null
+        }
+        Insert: {
+          format_fichier?: string
+          "formation-id"?: string | null
+          id?: string
+          intitule_format?: string | null
+          lien_moodle?: string | null
+          prix?: number | null
+        }
+        Update: {
+          format_fichier?: string
+          "formation-id"?: string | null
+          id?: string
+          intitule_format?: string | null
+          lien_moodle?: string | null
+          prix?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "formations_formats_ebook-id_fkey"
+            columns: ["formation-id"]
+            isOneToOne: false
+            referencedRelation: "ebook"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "formations_formats_formation-id_fkey"
+            columns: ["formation-id"]
+            isOneToOne: false
+            referencedRelation: "formations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

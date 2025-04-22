@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   return (
     <header className="border-b bg-white sticky top-0 z-50">
@@ -27,12 +29,23 @@ const Header = () => {
             <Link to="/ebooks" className="text-foreground hover:text-brand-magenta font-medium">
               E-books
             </Link>
-            <Link to="/mon-compte" className="text-foreground hover:text-brand-magenta font-medium">
-              Mon compte
-            </Link>
-            <Button asChild variant="default" className="bg-brand-magenta hover:bg-brand-magenta/90">
-              <Link to="/formations">Découvrir nos formations</Link>
-            </Button>
+            {user ? (
+              <>
+                <Link to="/mon-compte" className="text-foreground hover:text-brand-magenta font-medium">
+                  Mon compte
+                </Link>
+                <Button 
+                  variant="outline" 
+                  onClick={() => signOut()}
+                >
+                  Déconnexion
+                </Button>
+              </>
+            ) : (
+              <Button asChild variant="default" className="bg-brand-magenta hover:bg-brand-magenta/90">
+                <Link to="/auth">Connexion</Link>
+              </Button>
+            )}
           </nav>
           <div className="md:hidden flex items-center">
             <button
@@ -67,21 +80,36 @@ const Header = () => {
             >
               E-books
             </Link>
-            <Link
-              to="/mon-compte"
-              className="block text-foreground hover:text-brand-magenta font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Mon compte
-            </Link>
-            <Button
-              asChild
-              variant="default"
-              className="w-full bg-brand-magenta hover:bg-brand-magenta/90"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <Link to="/formations">Découvrir nos formations</Link>
-            </Button>
+            {user ? (
+              <>
+                <Link
+                  to="/mon-compte"
+                  className="block text-foreground hover:text-brand-magenta font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Mon compte
+                </Link>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    signOut();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full"
+                >
+                  Déconnexion
+                </Button>
+              </>
+            ) : (
+              <Button
+                asChild
+                variant="default"
+                className="w-full bg-brand-magenta hover:bg-brand-magenta/90"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Link to="/auth">Connexion</Link>
+              </Button>
+            )}
           </div>
         </div>
       )}
