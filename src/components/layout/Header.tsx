@@ -1,13 +1,29 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
+
+  const { data: isAdmin } = useQuery({
+    queryKey: ['user-role', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user?.id)
+        .single();
+      
+      if (error) throw error;
+      return data.role === 'admin';
+    },
+    enabled: !!user,
+  });
 
   return (
     <header className="border-b bg-white sticky top-0 z-50">
@@ -34,6 +50,11 @@ const Header = () => {
                 <Link to="/mon-compte" className="text-foreground hover:text-brand-magenta font-medium">
                   Mon compte
                 </Link>
+                {isAdmin && (
+                  <Link to="/admin" className="text-foreground hover:text-brand-magenta font-medium">
+                    Administration
+                  </Link>
+                )}
                 <Button 
                   variant="outline" 
                   onClick={() => signOut()}
@@ -62,7 +83,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white">
           <div className="container px-4 py-4 space-y-4">
@@ -89,6 +109,15 @@ const Header = () => {
                 >
                   Mon compte
                 </Link>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="block text-foreground hover:text-brand-magenta font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Administration
+                  </Link>
+                )}
                 <Button 
                   variant="outline" 
                   onClick={() => {
