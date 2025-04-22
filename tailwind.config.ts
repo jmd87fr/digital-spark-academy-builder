@@ -17,6 +17,9 @@ export default {
 				'2xl': '1400px'
 			}
 		},
+		fontFamily: {
+			sans: ['Inter', 'sans-serif'],
+		},
 		extend: {
 			colors: {
 				border: 'hsl(var(--border))',
@@ -61,7 +64,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+                // Brand colors based on the logo
+                brand: {
+                    green: '#6CB33F',
+                    magenta: '#C4168D',
+                    blue: '#54B8D9',
+                    yellow: '#F8C52C',
+                    gold: '#DBA63C',
+                    dark: '#1E2D35'
+                }
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
