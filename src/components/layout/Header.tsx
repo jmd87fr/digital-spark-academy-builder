@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -20,7 +21,7 @@ const Header = () => {
         .single();
       
       if (error) throw error;
-      return data.role === 'admin';
+      return data?.role === 'admin';
     },
     enabled: !!user,
   });
