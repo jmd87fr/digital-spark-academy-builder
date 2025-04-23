@@ -15,6 +15,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+// Define a type for the ebook data structure
+type Ebook = {
+  id: string;
+  titre: string;
+  description: string | null;
+  prix: number | null;
+  Categorie: string | null; // Updated to match the column name in Supabase
+}
+
 const AdminEbooks = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -27,12 +36,12 @@ const AdminEbooks = () => {
         .from('ebook')
         .select('*');
       if (error) throw error;
-      return data;
+      return data as Ebook[];
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (newEbook: any) => {
+    mutationFn: async (newEbook: Partial<Ebook>) => {
       const { data, error } = await supabase
         .from('ebook')
         .insert(newEbook)
@@ -52,7 +61,7 @@ const AdminEbooks = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
+    mutationFn: async ({ id, updates }: { id: string, updates: Partial<Ebook> }) => {
       const { data, error } = await supabase
         .from('ebook')
         .update(updates)
@@ -95,9 +104,9 @@ const AdminEbooks = () => {
     const formData = new FormData(e.currentTarget);
     
     createMutation.mutate({
-      titre: formData.get('titre'),
-      description: formData.get('description'),
-      catégorie: formData.get('catégorie'),
+      titre: formData.get('titre') as string,
+      description: formData.get('description') as string,
+      Categorie: formData.get('categorie') as string, // Updated to match the column name
       prix: Number(formData.get('prix')),
     });
   };
@@ -109,9 +118,9 @@ const AdminEbooks = () => {
     updateMutation.mutate({
       id,
       updates: {
-        titre: formData.get('titre'),
-        description: formData.get('description'),
-        catégorie: formData.get('catégorie'),
+        titre: formData.get('titre') as string,
+        description: formData.get('description') as string,
+        Categorie: formData.get('categorie') as string, // Updated to match the column name
         prix: Number(formData.get('prix')),
       }
     });
@@ -155,7 +164,7 @@ const AdminEbooks = () => {
               
               <div>
                 <label className="block text-sm font-medium mb-1">Catégorie</label>
-                <Input name="catégorie" placeholder="ebook, audiobook" />
+                <Input name="categorie" placeholder="ebook, audiobook" />
               </div>
               
               <div>
@@ -180,7 +189,7 @@ const AdminEbooks = () => {
           <Card key={ebook.id}>
             <CardHeader>
               <CardTitle>{ebook.titre}</CardTitle>
-              <CardDescription>{ebook.catégorie}</CardDescription>
+              <CardDescription>{ebook.Categorie}</CardDescription>
             </CardHeader>
             
             {editingId === ebook.id ? (
@@ -202,7 +211,7 @@ const AdminEbooks = () => {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Catégorie</label>
-                    <Input name="catégorie" defaultValue={ebook.catégorie || ''} />
+                    <Input name="categorie" defaultValue={ebook.Categorie || ''} />
                   </div>
                   
                   <div>

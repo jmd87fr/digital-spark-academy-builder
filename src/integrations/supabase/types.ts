@@ -38,18 +38,21 @@ export type Database = {
       }
       audiobook: {
         Row: {
+          categorie: string | null
           description: string | null
           id: string
           prix: number | null
           titre: string | null
         }
         Insert: {
+          categorie?: string | null
           description?: string | null
           id?: string
           prix?: number | null
           titre?: string | null
         }
         Update: {
+          categorie?: string | null
           description?: string | null
           id?: string
           prix?: number | null
@@ -95,18 +98,21 @@ export type Database = {
       }
       ebook: {
         Row: {
+          Categorie: string | null
           description: string | null
           id: string
           prix: number | null
           titre: string | null
         }
         Insert: {
+          Categorie?: string | null
           description?: string | null
           id?: string
           prix?: number | null
           titre?: string | null
         }
         Update: {
+          Categorie?: string | null
           description?: string | null
           id?: string
           prix?: number | null
