@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,23 +31,21 @@ const AdminPolicies = () => {
   const { data: policies, isLoading } = useQuery<Policy[]>({
     queryKey: ['policies-admin'],
     queryFn: async () => {
-      // @ts-expect-error: policies table not in generated types yet.
       const { data, error } = await supabase
-        .from("policies" as any)
+        .from("policies")
         .select("*")
-        .order("title");
+        .order("title") as { data: Policy[] | null, error: any };
       if (error) throw error;
       return data || [];
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (newPolicy: any) => {
-      // @ts-expect-error: policies table not in generated types yet.
+    mutationFn: async (newPolicy: Omit<Policy, 'id' | 'created_at' | 'updated_at'>) => {
       const { data, error } = await supabase
-        .from("policies" as any)
+        .from("policies")
         .insert(newPolicy)
-        .select();
+        .select() as { data: Policy[] | null, error: any };
       if (error) throw error;
       return data;
     },
@@ -63,13 +60,12 @@ const AdminPolicies = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
-      // @ts-expect-error: policies table not in generated types yet.
+    mutationFn: async ({ id, updates }: { id: string, updates: Partial<Policy> }) => {
       const { data, error } = await supabase
-        .from("policies" as any)
+        .from("policies")
         .update(updates)
         .eq('id', id)
-        .select();
+        .select() as { data: Policy[] | null, error: any };
       if (error) throw error;
       return data;
     },
@@ -85,9 +81,8 @@ const AdminPolicies = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      // @ts-expect-error: policies table not in generated types yet.
       const { error } = await supabase
-        .from("policies" as any)
+        .from("policies")
         .delete()
         .eq('id', id);
       if (error) throw error;

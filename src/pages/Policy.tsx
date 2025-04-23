@@ -9,6 +9,8 @@ type Policy = {
   title: string;
   slug: string;
   content: string;
+  created_at?: string;
+  updated_at?: string;
 };
 
 const Policy = () => {
@@ -17,12 +19,11 @@ const Policy = () => {
   const { data: policy, isLoading, error } = useQuery<Policy | null>({
     queryKey: ['policy', slug],
     queryFn: async () => {
-      // @ts-expect-error: policies table not in generated types yet.
       const { data, error } = await supabase
-        .from("policies" as any)
+        .from("policies")
         .select("*")
         .eq("slug", slug)
-        .maybeSingle();
+        .maybeSingle() as { data: Policy | null, error: any };
       if (error) throw error;
       return data;
     },

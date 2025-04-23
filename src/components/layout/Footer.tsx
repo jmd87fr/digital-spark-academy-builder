@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +15,6 @@ const Footer = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
-  // Correction du bug d'appel policies (retirer @ts-expect-error)
   const { data: policies } = useQuery<Policy[]>({
     queryKey: ['footer-policies'],
     queryFn: async () => {
@@ -24,7 +22,7 @@ const Footer = () => {
       const { data, error } = await supabase
         .from("policies")
         .select("id, title, slug")
-        .order("title", { ascending: true });
+        .order("title", { ascending: true }) as { data: Policy[] | null, error: any };
       if (error) throw error;
       return data || [];
     },
