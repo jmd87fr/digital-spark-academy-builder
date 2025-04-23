@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       achats: {
         Row: {
+          audiobook_id: string | null
           date_achat: string | null
           ebook_id: string | null
           formation_format_id: string | null
@@ -18,6 +19,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          audiobook_id?: string | null
           date_achat?: string | null
           ebook_id?: string | null
           formation_format_id?: string | null
@@ -25,6 +27,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          audiobook_id?: string | null
           date_achat?: string | null
           ebook_id?: string | null
           formation_format_id?: string | null
@@ -33,23 +36,77 @@ export type Database = {
         }
         Relationships: []
       }
-      ebook: {
+      audiobook: {
         Row: {
-          catégorie: string | null
           description: string | null
           id: string
           prix: number | null
           titre: string | null
         }
         Insert: {
-          catégorie?: string | null
           description?: string | null
           id?: string
           prix?: number | null
           titre?: string | null
         }
         Update: {
-          catégorie?: string | null
+          description?: string | null
+          id?: string
+          prix?: number | null
+          titre?: string | null
+        }
+        Relationships: []
+      }
+      audiobook_formats: {
+        Row: {
+          "audiobook-id": string | null
+          format_fichier: string
+          id: string
+          URL_fichier: string | null
+        }
+        Insert: {
+          "audiobook-id"?: string | null
+          format_fichier?: string
+          id?: string
+          URL_fichier?: string | null
+        }
+        Update: {
+          "audiobook-id"?: string | null
+          format_fichier?: string
+          id?: string
+          URL_fichier?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audiobook_formats_ebook-id_fkey"
+            columns: ["audiobook-id"]
+            isOneToOne: false
+            referencedRelation: "ebook"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audiobook_formats_ebook-id_fkey1"
+            columns: ["audiobook-id"]
+            isOneToOne: false
+            referencedRelation: "audiobook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ebook: {
+        Row: {
+          description: string | null
+          id: string
+          prix: number | null
+          titre: string | null
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          prix?: number | null
+          titre?: string | null
+        }
+        Update: {
           description?: string | null
           id?: string
           prix?: number | null

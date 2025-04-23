@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,9 +102,9 @@ const AdminPolicies = () => {
     const formData = new FormData(e.currentTarget);
 
     createMutation.mutate({
-      title: formData.get('title'),
-      slug: formData.get('slug'),
-      content: formData.get('content'),
+      title: String(formData.get('title') || ''),
+      slug: String(formData.get('slug') || ''),
+      content: String(formData.get('content') || ''),
     });
   };
 
@@ -114,9 +115,9 @@ const AdminPolicies = () => {
     updateMutation.mutate({
       id,
       updates: {
-        title: formData.get('title'),
-        slug: formData.get('slug'),
-        content: formData.get('content'),
+        title: String(formData.get('title') || ''),
+        slug: String(formData.get('slug') || ''),
+        content: String(formData.get('content') || ''),
       }
     });
   };
