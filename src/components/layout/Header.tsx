@@ -19,7 +19,6 @@ const Header = () => {
         .select('role')
         .eq('user_id', user?.id)
         .single();
-      
       if (error) throw error;
       return data?.role === 'admin';
     },
@@ -45,6 +44,9 @@ const Header = () => {
             </Link>
             <Link to="/ebooks" className="text-foreground hover:text-brand-magenta font-medium">
               E-books
+            </Link>
+            <Link to="/audiobooks" className="text-foreground hover:text-brand-magenta font-medium">
+              Audiobooks
             </Link>
             {user ? (
               <>
@@ -101,6 +103,13 @@ const Header = () => {
             >
               E-books
             </Link>
+            <Link
+              to="/audiobooks"
+              className="block text-foreground hover:text-brand-magenta font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Audiobooks
+            </Link>
             {user ? (
               <>
                 <Link
@@ -148,3 +157,4 @@ const Header = () => {
 };
 
 export default Header;
+

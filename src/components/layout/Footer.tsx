@@ -16,14 +16,15 @@ const Footer = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
+  // Correction du bug d'appel policies (retirer @ts-expect-error)
   const { data: policies } = useQuery<Policy[]>({
     queryKey: ['footer-policies'],
     queryFn: async () => {
-      // @ts-expect-error: policies table not in generated types yet.
+      // Important: on ne ramène que les policies, pas les liens
       const { data, error } = await supabase
-        .from("policies" as any)
+        .from("policies")
         .select("id, title, slug")
-        .order("title");
+        .order("title", { ascending: true });
       if (error) throw error;
       return data || [];
     },
@@ -78,6 +79,11 @@ const Footer = () => {
               <li>
                 <Link to="/ebooks" className="text-gray-300 hover:text-white">
                   E-books
+                </Link>
+              </li>
+              <li>
+                <Link to="/audiobooks" className="text-gray-300 hover:text-white">
+                  Audiobooks
                 </Link>
               </li>
               <li>
