@@ -1,34 +1,25 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import EbookCreateForm from "./EbookCreateForm";
+import EbookEditForm from "./EbookEditForm";
+import EbookCard from "./EbookCard";
+import { Button } from "@/components/ui/button";
 
-// Define a type for the ebook data structure
 type Ebook = {
   id: string;
   titre: string;
   description: string | null;
   prix: number | null;
-  Categorie: string | null; // Updated to match the column name in Supabase
+  Categorie: string | null;
 }
 
 const AdminEbooks = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const queryClient = useQueryClient();
-  
+
   const { data: ebooks, isLoading } = useQuery({
     queryKey: ['ebooks-admin'],
     queryFn: async () => {
@@ -46,7 +37,7 @@ const AdminEbooks = () => {
         .from('ebook')
         .insert(newEbook)
         .select();
-      
+
       if (error) throw error;
       return data;
     },
@@ -67,7 +58,7 @@ const AdminEbooks = () => {
         .update(updates)
         .eq('id', id)
         .select();
-      
+
       if (error) throw error;
       return data;
     },
@@ -87,7 +78,7 @@ const AdminEbooks = () => {
         .from('ebook')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -102,11 +93,11 @@ const AdminEbooks = () => {
   const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     createMutation.mutate({
       titre: formData.get('titre') as string,
       description: formData.get('description') as string,
-      Categorie: formData.get('categorie') as string, // Updated to match the column name
+      Categorie: formData.get('categorie') as string,
       prix: Number(formData.get('prix')),
     });
   };
@@ -114,13 +105,13 @@ const AdminEbooks = () => {
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     updateMutation.mutate({
       id,
       updates: {
         titre: formData.get('titre') as string,
         description: formData.get('description') as string,
-        Categorie: formData.get('categorie') as string, // Updated to match the column name
+        Categorie: formData.get('categorie') as string,
         prix: Number(formData.get('prix')),
       }
     });
@@ -143,140 +134,37 @@ const AdminEbooks = () => {
           Nouvel e-book
         </Button>
       </div>
-
       {isCreating && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Créer un nouvel e-book</CardTitle>
-            <CardDescription>Remplissez les détails du nouvel e-book</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form id="create-ebook-form" onSubmit={handleCreate} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Titre</label>
-                <Input name="titre" required />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <Textarea name="description" />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Catégorie</label>
-                <Input name="categorie" placeholder="ebook, audiobook" />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Prix</label>
-                <Input name="prix" type="number" step="0.01" defaultValue="0" />
-              </div>
-            </form>
-          </CardContent>
-          <CardFooter className="flex justify-end gap-2">
-            <Button form="create-ebook-form" type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Création en cours..." : "Créer"}
-            </Button>
-            <Button variant="outline" onClick={() => setIsCreating(false)}>
-              Annuler
-            </Button>
-          </CardFooter>
-        </Card>
+        <EbookCreateForm
+          onSubmit={handleCreate}
+          onCancel={() => setIsCreating(false)}
+          isPending={createMutation.isPending}
+        />
       )}
 
       <div className="grid gap-6">
-        {ebooks?.map((ebook) => (
-          <Card key={ebook.id}>
-            <CardHeader>
-              <CardTitle>{ebook.titre}</CardTitle>
-              <CardDescription>{ebook.Categorie}</CardDescription>
-            </CardHeader>
-            
-            {editingId === ebook.id ? (
-              <CardContent>
-                <form
-                  id={`edit-ebook-form-${ebook.id}`}
-                  onSubmit={(e) => handleUpdate(e, ebook.id)}
-                  className="space-y-4"
-                >
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Titre</label>
-                    <Input name="titre" defaultValue={ebook.titre || ''} required />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Description</label>
-                    <Textarea name="description" defaultValue={ebook.description || ''} />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Catégorie</label>
-                    <Input name="categorie" defaultValue={ebook.Categorie || ''} />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Prix</label>
-                    <Input 
-                      name="prix" 
-                      type="number" 
-                      step="0.01" 
-                      defaultValue={ebook.prix || 0} 
-                    />
-                  </div>
-                </form>
-              </CardContent>
-            ) : (
-              <CardContent className="space-y-2">
-                {ebook.description && (
-                  <div>
-                    <p className="font-medium">Description:</p>
-                    <p className="text-gray-600">{ebook.description}</p>
-                  </div>
-                )}
-                {ebook.prix !== null && (
-                  <div>
-                    <p className="font-medium">Prix:</p>
-                    <p className="text-gray-600">{ebook.prix} €</p>
-                  </div>
-                )}
-              </CardContent>
-            )}
-            
-            <CardFooter className="flex justify-end gap-2">
-              {editingId === ebook.id ? (
-                <>
-                  <Button 
-                    form={`edit-ebook-form-${ebook.id}`} 
-                    type="submit"
-                    disabled={updateMutation.isPending}
-                  >
-                    {updateMutation.isPending ? "Sauvegarde..." : "Enregistrer"}
-                  </Button>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={() => setEditingId(null)}
-                  >
-                    Annuler
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="outline" onClick={() => setEditingId(ebook.id)}>
-                    Modifier
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    onClick={() => handleDelete(ebook.id)}
-                    disabled={deleteMutation.isPending}
-                  >
-                    {deleteMutation.isPending ? "Suppression..." : "Supprimer"}
-                  </Button>
-                </>
+        {ebooks?.map((ebook) => {
+          const isEditing = editingId === ebook.id;
+          return (
+            <EbookCard
+              key={ebook.id}
+              ebook={ebook}
+              isEditing={isEditing}
+              onEdit={() => setEditingId(ebook.id)}
+              onDelete={() => handleDelete(ebook.id)}
+              isDeletePending={deleteMutation.isPending}
+            >
+              {isEditing && (
+                <EbookEditForm
+                  ebook={ebook}
+                  onSubmit={handleUpdate}
+                  onCancel={() => setEditingId(null)}
+                  isPending={updateMutation.isPending}
+                />
               )}
-            </CardFooter>
-          </Card>
-        ))}
+            </EbookCard>
+          );
+        })}
       </div>
     </div>
   );
