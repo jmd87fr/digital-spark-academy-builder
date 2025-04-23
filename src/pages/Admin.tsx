@@ -8,6 +8,7 @@ import Layout from "@/components/layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminFormations from "@/components/admin/AdminFormations";
 import AdminEbooks from "@/components/admin/AdminEbooks";
+import AdminPolicies from "@/components/admin/AdminPolicies";
 
 const Admin = () => {
   const { user } = useAuth();
@@ -47,6 +48,7 @@ const Admin = () => {
           <TabsList>
             <TabsTrigger value="formations">Formations</TabsTrigger>
             <TabsTrigger value="ebooks">E-books</TabsTrigger>
+            <TabsTrigger value="policies">Pages légales</TabsTrigger>
           </TabsList>
           
           <TabsContent value="formations">
@@ -55,6 +57,10 @@ const Admin = () => {
           
           <TabsContent value="ebooks">
             <AdminEbooks />
+          </TabsContent>
+          
+          <TabsContent value="policies">
+            <AdminPolicies />
           </TabsContent>
         </Tabs>
       </div>

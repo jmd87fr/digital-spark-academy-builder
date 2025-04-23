@@ -3,10 +3,25 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+
+  const { data: policies } = useQuery({
+    queryKey: ['footer-policies'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('policies')
+        .select('title, slug')
+        .order('title');
+      
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +112,20 @@ const Footer = () => {
                 </div>
               </form>
             )}
+
+            {/* Policy Links */}
+            <div className="mt-6">
+              <h3 className="font-bold text-lg mb-4">Informations légales</h3>
+              <ul className="space-y-2">
+                {policies?.map((policy) => (
+                  <li key={policy.slug}>
+                    <Link to={`/${policy.slug}`} className="text-gray-300 hover:text-white">
+                      {policy.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 

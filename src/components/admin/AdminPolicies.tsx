@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
   Card,
@@ -15,36 +15,38 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const AdminEbooks = () => {
+const AdminPolicies = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const queryClient = useQueryClient();
   
-  const { data: ebooks, isLoading } = useQuery({
-    queryKey: ['ebooks-admin'],
+  const { data: policies, isLoading } = useQuery({
+    queryKey: ['policies-admin'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('ebook')
-        .select('*');
+        .from('policies')
+        .select('*')
+        .order('title');
+      
       if (error) throw error;
-      return data;
+      return data || [];
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (newEbook: any) => {
+    mutationFn: async (newPolicy: any) => {
       const { data, error } = await supabase
-        .from('ebook')
-        .insert(newEbook)
+        .from('policies')
+        .insert(newPolicy)
         .select();
       
       if (error) throw error;
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ebooks-admin'] });
+      queryClient.invalidateQueries({ queryKey: ['policies-admin'] });
       setIsCreating(false);
-      toast.success('E-book créé avec succès');
+      toast.success('Page créée avec succès');
     },
     onError: (error: any) => {
       toast.error('Erreur: ' + error.message);
@@ -54,7 +56,7 @@ const AdminEbooks = () => {
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
       const { data, error } = await supabase
-        .from('ebook')
+        .from('policies')
         .update(updates)
         .eq('id', id)
         .select();
@@ -63,9 +65,9 @@ const AdminEbooks = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ebooks-admin'] });
+      queryClient.invalidateQueries({ queryKey: ['policies-admin'] });
       setEditingId(null);
-      toast.success('E-book mis à jour');
+      toast.success('Page mise à jour');
     },
     onError: (error: any) => {
       toast.error('Erreur: ' + error.message);
@@ -75,15 +77,15 @@ const AdminEbooks = () => {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from('ebook')
+        .from('policies')
         .delete()
         .eq('id', id);
       
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ebooks-admin'] });
-      toast.success('E-book supprimé');
+      queryClient.invalidateQueries({ queryKey: ['policies-admin'] });
+      toast.success('Page supprimée');
     },
     onError: (error: any) => {
       toast.error('Erreur: ' + error.message);
@@ -95,10 +97,9 @@ const AdminEbooks = () => {
     const formData = new FormData(e.currentTarget);
     
     createMutation.mutate({
-      titre: formData.get('titre'),
-      description: formData.get('description'),
-      catégorie: formData.get('catégorie'),
-      prix: Number(formData.get('prix')),
+      title: formData.get('title'),
+      slug: formData.get('slug'),
+      content: formData.get('content'),
     });
   };
 
@@ -109,63 +110,81 @@ const AdminEbooks = () => {
     updateMutation.mutate({
       id,
       updates: {
-        titre: formData.get('titre'),
-        description: formData.get('description'),
-        catégorie: formData.get('catégorie'),
-        prix: Number(formData.get('prix')),
+        title: formData.get('title'),
+        slug: formData.get('slug'),
+        content: formData.get('content'),
       }
     });
   };
 
   const handleDelete = (id: string) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet e-book ?')) return;
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette page ?')) return;
     deleteMutation.mutate(id);
   };
 
+  const policyTypes = [
+    { name: "Audiobooks", slug: "audiobooks" },
+    { name: "Politique de confidentialité", slug: "privacy-policy" },
+    { name: "Charte IA", slug: "ai-charter" },
+    { name: "Conditions Générales d'Utilisation", slug: "terms" },
+    { name: "Conditions Générales de Vente", slug: "terms-of-sale" },
+  ];
+
   if (isLoading) {
-    return <div>Chargement des e-books...</div>;
+    return <div>Chargement des pages...</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">Gérer les e-books</h2>
+        <h2 className="text-2xl font-semibold">Gérer les pages légales</h2>
         <Button onClick={() => setIsCreating(true)} variant="default">
-          Nouvel e-book
+          Nouvelle page
         </Button>
       </div>
 
       {isCreating && (
         <Card>
           <CardHeader>
-            <CardTitle>Créer un nouvel e-book</CardTitle>
-            <CardDescription>Remplissez les détails du nouvel e-book</CardDescription>
+            <CardTitle>Créer une nouvelle page</CardTitle>
+            <CardDescription>Choisissez le type de page et remplissez son contenu</CardDescription>
           </CardHeader>
           <CardContent>
-            <form id="create-ebook-form" onSubmit={handleCreate} className="space-y-4">
+            <form id="create-policy-form" onSubmit={handleCreate} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Type de page</label>
+                <select 
+                  name="slug"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                  onChange={(e) => {
+                    const selectedPolicy = policyTypes.find(p => p.slug === e.target.value);
+                    if (selectedPolicy) {
+                      const titleInput = document.querySelector('input[name="title"]') as HTMLInputElement;
+                      if (titleInput) titleInput.value = selectedPolicy.name;
+                    }
+                  }}
+                >
+                  <option value="">Sélectionnez un type</option>
+                  {policyTypes.map(type => (
+                    <option key={type.slug} value={type.slug}>{type.name}</option>
+                  ))}
+                </select>
+              </div>
+              
               <div>
                 <label className="block text-sm font-medium mb-1">Titre</label>
-                <Input name="titre" required />
+                <Input name="title" required />
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <Textarea name="description" />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Catégorie</label>
-                <Input name="catégorie" placeholder="ebook, audiobook" />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Prix</label>
-                <Input name="prix" type="number" step="0.01" defaultValue="0" />
+                <label className="block text-sm font-medium mb-1">Contenu</label>
+                <Textarea name="content" className="min-h-[300px]" required />
               </div>
             </form>
           </CardContent>
           <CardFooter className="flex justify-end gap-2">
-            <Button form="create-ebook-form" type="submit" disabled={createMutation.isPending}>
+            <Button form="create-policy-form" type="submit" disabled={createMutation.isPending}>
               {createMutation.isPending ? "Création en cours..." : "Créer"}
             </Button>
             <Button variant="outline" onClick={() => setIsCreating(false)}>
@@ -176,68 +195,60 @@ const AdminEbooks = () => {
       )}
 
       <div className="grid gap-6">
-        {ebooks?.map((ebook) => (
-          <Card key={ebook.id}>
+        {policies?.map((policy) => (
+          <Card key={policy.id}>
             <CardHeader>
-              <CardTitle>{ebook.titre}</CardTitle>
-              <CardDescription>{ebook.catégorie}</CardDescription>
+              <CardTitle>{policy.title}</CardTitle>
+              <CardDescription>/{policy.slug}</CardDescription>
             </CardHeader>
             
-            {editingId === ebook.id ? (
+            {editingId === policy.id ? (
               <CardContent>
                 <form
-                  id={`edit-ebook-form-${ebook.id}`}
-                  onSubmit={(e) => handleUpdate(e, ebook.id)}
+                  id={`edit-policy-form-${policy.id}`}
+                  onSubmit={(e) => handleUpdate(e, policy.id)}
                   className="space-y-4"
                 >
                   <div>
                     <label className="block text-sm font-medium mb-1">Titre</label>
-                    <Input name="titre" defaultValue={ebook.titre || ''} required />
+                    <Input name="title" defaultValue={policy.title} required />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">Description</label>
-                    <Textarea name="description" defaultValue={ebook.description || ''} />
+                    <label className="block text-sm font-medium mb-1">Slug</label>
+                    <Input name="slug" defaultValue={policy.slug} required />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">Catégorie</label>
-                    <Input name="catégorie" defaultValue={ebook.catégorie || ''} />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Prix</label>
-                    <Input 
-                      name="prix" 
-                      type="number" 
-                      step="0.01" 
-                      defaultValue={ebook.prix || 0} 
+                    <label className="block text-sm font-medium mb-1">Contenu</label>
+                    <Textarea 
+                      name="content" 
+                      defaultValue={policy.content} 
+                      className="min-h-[300px]"
+                      required
                     />
                   </div>
                 </form>
               </CardContent>
             ) : (
-              <CardContent className="space-y-2">
-                {ebook.description && (
-                  <div>
-                    <p className="font-medium">Description:</p>
-                    <p className="text-gray-600">{ebook.description}</p>
+              <CardContent>
+                <div className="prose max-w-none">
+                  <div className="max-h-[200px] overflow-y-auto border p-4 rounded-md">
+                    {policy.content ? (
+                      <div dangerouslySetInnerHTML={{ __html: policy.content.replace(/\n/g, '<br>') }} />
+                    ) : (
+                      <p className="text-gray-500 italic">Aucun contenu</p>
+                    )}
                   </div>
-                )}
-                {ebook.prix !== null && (
-                  <div>
-                    <p className="font-medium">Prix:</p>
-                    <p className="text-gray-600">{ebook.prix} €</p>
-                  </div>
-                )}
+                </div>
               </CardContent>
             )}
             
             <CardFooter className="flex justify-end gap-2">
-              {editingId === ebook.id ? (
+              {editingId === policy.id ? (
                 <>
                   <Button 
-                    form={`edit-ebook-form-${ebook.id}`} 
+                    form={`edit-policy-form-${policy.id}`} 
                     type="submit"
                     disabled={updateMutation.isPending}
                   >
@@ -253,12 +264,12 @@ const AdminEbooks = () => {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" onClick={() => setEditingId(ebook.id)}>
+                  <Button variant="outline" onClick={() => setEditingId(policy.id)}>
                     Modifier
                   </Button>
                   <Button 
                     variant="destructive" 
-                    onClick={() => handleDelete(ebook.id)}
+                    onClick={() => handleDelete(policy.id)}
                     disabled={deleteMutation.isPending}
                   >
                     {deleteMutation.isPending ? "Suppression..." : "Supprimer"}
@@ -273,4 +284,4 @@ const AdminEbooks = () => {
   );
 };
 
-export default AdminEbooks;
+export default AdminPolicies;
