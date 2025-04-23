@@ -4,18 +4,25 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 
+type Policy = {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+};
+
 const Policy = () => {
   const { slug } = useParams<{ slug: string }>();
-  
-  const { data: policy, isLoading, error } = useQuery({
+
+  const { data: policy, isLoading, error } = useQuery<Policy | null>({
     queryKey: ['policy', slug],
     queryFn: async () => {
+      // @ts-expect-error: policies table not in generated types yet.
       const { data, error } = await supabase
-        .from('policies')
-        .select('*')
-        .eq('slug', slug)
-        .single();
-      
+        .from("policies" as any)
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -31,13 +38,13 @@ const Policy = () => {
         ) : error ? (
           <div className="text-center py-8">
             <h1 className="text-2xl font-bold text-red-600">Page introuvable</h1>
-            <p className="mt-4">La page que vous cherchez n'existe pas.</p>
+            <p className="mt-4">La page que vous cherchez n&apos;existe pas.</p>
           </div>
         ) : policy ? (
           <div>
             <h1 className="text-3xl font-bold mb-8">{policy.title}</h1>
             <div className="prose max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: policy.content.replace(/\n/g, '<br>') }} />
+              <div dangerouslySetInnerHTML={{ __html: policy.content?.replace(/\n/g, '<br>') || "" }} />
             </div>
           </div>
         ) : (

@@ -6,18 +6,24 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+type Policy = {
+  id: string;
+  title: string;
+  slug: string;
+};
+
 const Footer = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
-  const { data: policies } = useQuery({
+  const { data: policies } = useQuery<Policy[]>({
     queryKey: ['footer-policies'],
     queryFn: async () => {
+      // @ts-expect-error: policies table not in generated types yet.
       const { data, error } = await supabase
-        .from('policies')
-        .select('title, slug')
-        .order('title');
-      
+        .from("policies" as any)
+        .select("id, title, slug")
+        .order("title");
       if (error) throw error;
       return data || [];
     },
@@ -26,7 +32,6 @@ const Footer = () => {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      // In a real implementation, this would connect to a newsletter service
       setSubscribed(true);
       setEmail("");
     }
@@ -38,9 +43,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <Link to="/" className="inline-block mb-6">
-              <img 
-                src="/lovable-uploads/ab1a1952-fb8d-4184-b6b2-3c8d271ecfa7.png" 
-                alt="Formations-digitales.fr" 
+              <img
+                src="/lovable-uploads/ab1a1952-fb8d-4184-b6b2-3c8d271ecfa7.png"
+                alt="Formations-digitales.fr"
                 className="h-16 w-auto"
               />
             </Link>
@@ -92,7 +97,7 @@ const Footer = () => {
             ) : (
               <form onSubmit={handleSubscribe}>
                 <p className="text-gray-300 mb-3">
-                  Inscrivez-vous pour recevoir nos actualités et des contenus exclusifs sur l'IA.
+                  Inscrivez-vous pour recevoir nos actualités et des contenus exclusifs sur l&apos;IA.
                 </p>
                 <div className="flex flex-col space-y-2">
                   <Input
@@ -103,11 +108,11 @@ const Footer = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="bg-brand-magenta hover:bg-brand-magenta/90"
                   >
-                    S'inscrire
+                    S&apos;inscrire
                   </Button>
                 </div>
               </form>

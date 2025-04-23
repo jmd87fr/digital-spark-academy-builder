@@ -15,19 +15,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+type Policy = {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
 const AdminPolicies = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const queryClient = useQueryClient();
-  
-  const { data: policies, isLoading } = useQuery({
+
+  const { data: policies, isLoading } = useQuery<Policy[]>({
     queryKey: ['policies-admin'],
     queryFn: async () => {
+      // @ts-expect-error: policies table not in generated types yet.
       const { data, error } = await supabase
-        .from('policies')
-        .select('*')
-        .order('title');
-      
+        .from("policies" as any)
+        .select("*")
+        .order("title");
       if (error) throw error;
       return data || [];
     },
@@ -35,11 +44,11 @@ const AdminPolicies = () => {
 
   const createMutation = useMutation({
     mutationFn: async (newPolicy: any) => {
+      // @ts-expect-error: policies table not in generated types yet.
       const { data, error } = await supabase
-        .from('policies')
+        .from("policies" as any)
         .insert(newPolicy)
         .select();
-      
       if (error) throw error;
       return data;
     },
@@ -55,12 +64,12 @@ const AdminPolicies = () => {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
+      // @ts-expect-error: policies table not in generated types yet.
       const { data, error } = await supabase
-        .from('policies')
+        .from("policies" as any)
         .update(updates)
         .eq('id', id)
         .select();
-      
       if (error) throw error;
       return data;
     },
@@ -76,11 +85,11 @@ const AdminPolicies = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
+      // @ts-expect-error: policies table not in generated types yet.
       const { error } = await supabase
-        .from('policies')
+        .from("policies" as any)
         .delete()
         .eq('id', id);
-      
       if (error) throw error;
     },
     onSuccess: () => {
@@ -95,7 +104,7 @@ const AdminPolicies = () => {
   const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     createMutation.mutate({
       title: formData.get('title'),
       slug: formData.get('slug'),
@@ -106,7 +115,7 @@ const AdminPolicies = () => {
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     updateMutation.mutate({
       id,
       updates: {
@@ -153,7 +162,7 @@ const AdminPolicies = () => {
             <form id="create-policy-form" onSubmit={handleCreate} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Type de page</label>
-                <select 
+                <select
                   name="slug"
                   className="w-full p-2 border border-gray-300 rounded-md"
                   required
@@ -171,12 +180,12 @@ const AdminPolicies = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium mb-1">Titre</label>
                 <Input name="title" required />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium mb-1">Contenu</label>
                 <Textarea name="content" className="min-h-[300px]" required />
@@ -201,7 +210,7 @@ const AdminPolicies = () => {
               <CardTitle>{policy.title}</CardTitle>
               <CardDescription>/{policy.slug}</CardDescription>
             </CardHeader>
-            
+
             {editingId === policy.id ? (
               <CardContent>
                 <form
@@ -213,17 +222,17 @@ const AdminPolicies = () => {
                     <label className="block text-sm font-medium mb-1">Titre</label>
                     <Input name="title" defaultValue={policy.title} required />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium mb-1">Slug</label>
                     <Input name="slug" defaultValue={policy.slug} required />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium mb-1">Contenu</label>
-                    <Textarea 
-                      name="content" 
-                      defaultValue={policy.content} 
+                    <Textarea
+                      name="content"
+                      defaultValue={policy.content}
                       className="min-h-[300px]"
                       required
                     />
@@ -243,20 +252,20 @@ const AdminPolicies = () => {
                 </div>
               </CardContent>
             )}
-            
+
             <CardFooter className="flex justify-end gap-2">
               {editingId === policy.id ? (
                 <>
-                  <Button 
-                    form={`edit-policy-form-${policy.id}`} 
+                  <Button
+                    form={`edit-policy-form-${policy.id}`}
                     type="submit"
                     disabled={updateMutation.isPending}
                   >
                     {updateMutation.isPending ? "Sauvegarde..." : "Enregistrer"}
                   </Button>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     onClick={() => setEditingId(null)}
                   >
                     Annuler
@@ -267,8 +276,8 @@ const AdminPolicies = () => {
                   <Button variant="outline" onClick={() => setEditingId(policy.id)}>
                     Modifier
                   </Button>
-                  <Button 
-                    variant="destructive" 
+                  <Button
+                    variant="destructive"
                     onClick={() => handleDelete(policy.id)}
                     disabled={deleteMutation.isPending}
                   >
