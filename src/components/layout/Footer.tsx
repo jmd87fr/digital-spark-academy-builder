@@ -139,7 +139,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-400">
-          <p>© {new Date().getFullYear()} Formations-digitales.fr. Tous droits réservés.</p>
+          <p>© {new Date().getFullYear()} formations-digitales.fr. Tous droits réservés.</p>
         </div>
       </div>
     </footer>
