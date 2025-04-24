@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => ({
       name: 'copy-cname',
       closeBundle: () => {
         try {
-          copyFileSync('CNAME', 'dist/CNAME');
+          copyFileSync(path.resolve(__dirname, 'CNAME'), path.resolve(__dirname, 'dist/CNAME'));
           console.log('✅ Fichier CNAME copié dans dist/');
         } catch (err) {
           console.warn('⚠️ Impossible de copier le fichier CNAME :', err);
