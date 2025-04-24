@@ -3,14 +3,21 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Textarea } from './textarea';
 
-interface MarkdownEditorProps extends React.ComponentPropsWithoutRef<'textarea'> {
+interface MarkdownEditorProps {
   value?: string;
   onChange?: (value: string) => void;
   preview?: boolean;
+  className?: string;
+  placeholder?: string;
+  rows?: number;
+  name?: string;
+  id?: string;
+  required?: boolean;
+  disabled?: boolean;
 }
 
 export const MarkdownEditor = React.forwardRef<HTMLTextAreaElement, MarkdownEditorProps>(
-  ({ value, onChange, preview = true, ...props }, ref) => {
+  ({ value, onChange, preview = true, className, ...props }, ref) => {
     return (
       <div className="space-y-4">
         <div className="relative">
@@ -18,7 +25,7 @@ export const MarkdownEditor = React.forwardRef<HTMLTextAreaElement, MarkdownEdit
             ref={ref}
             value={value}
             onChange={(e) => onChange?.(e.target.value)}
-            className="min-h-[200px] font-mono"
+            className={`min-h-[200px] font-mono ${className || ''}`}
             placeholder="Utilisez la syntaxe Markdown pour mettre en forme votre texte..."
             {...props}
           />

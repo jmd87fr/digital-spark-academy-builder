@@ -1,9 +1,11 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Linkedin } from "lucide-react";
 
 type Policy = {
   id: string;
@@ -59,6 +61,17 @@ const Footer = () => {
                 <strong>Téléphone:</strong> +33 (0)1 23 45 67 89
               </p>
             </div>
+            <div className="mt-4">
+              <a 
+                href="https://www.linkedin.com/in/jeanmarcdoucet/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-block text-gray-300 hover:text-white transition-colors"
+                aria-label="LinkedIn de Jean-Marc Doucet"
+              >
+                <Linkedin size={24} />
+              </a>
+            </div>
           </div>
 
           <div>
@@ -80,13 +93,13 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/audiobooks" className="text-gray-300 hover:text-white">
-                  Audiobooks
+                <Link to="/mon-compte" className="text-gray-300 hover:text-white">
+                  Mon compte
                 </Link>
               </li>
               <li>
-                <Link to="/mon-compte" className="text-gray-300 hover:text-white">
-                  Mon compte
+                <Link to="/auth" className="text-gray-300 hover:text-white">
+                  Connexion
                 </Link>
               </li>
             </ul>

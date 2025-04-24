@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import Policy from "./pages/Policy";
+import { CookieConsent } from "./components/cookies/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
       <ThemeProvider>
         <AuthProvider>
           <TooltipProvider>
+            <CookieConsent />
             <Toaster />
             <Sonner />
             <Routes>

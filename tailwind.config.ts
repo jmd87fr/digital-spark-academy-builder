@@ -1,3 +1,4 @@
+
 import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
@@ -53,7 +54,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+        sans: ["Montserrat", ...fontFamily.sans],
       },
       colors: {
         border: "hsl(var(--border))",
