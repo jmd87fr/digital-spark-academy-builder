@@ -96,6 +96,63 @@ export type Database = {
           },
         ]
       }
+      contents: {
+        Row: {
+          address: string | null
+          button_link: string | null
+          button_text: string | null
+          content: string | null
+          email: string | null
+          facebook: string | null
+          id: string
+          image_url: string | null
+          instagram: string | null
+          linkedin: string | null
+          phone: string | null
+          section: string
+          subtitle: string | null
+          title: string | null
+          twitter: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          button_link?: string | null
+          button_text?: string | null
+          content?: string | null
+          email?: string | null
+          facebook?: string | null
+          id?: string
+          image_url?: string | null
+          instagram?: string | null
+          linkedin?: string | null
+          phone?: string | null
+          section: string
+          subtitle?: string | null
+          title?: string | null
+          twitter?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          button_link?: string | null
+          button_text?: string | null
+          content?: string | null
+          email?: string | null
+          facebook?: string | null
+          id?: string
+          image_url?: string | null
+          instagram?: string | null
+          linkedin?: string | null
+          phone?: string | null
+          section?: string
+          subtitle?: string | null
+          title?: string | null
+          twitter?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ebook: {
         Row: {
           categorie: string | null

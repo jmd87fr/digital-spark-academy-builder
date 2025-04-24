@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,13 +18,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 type Content = {
   id: string;
   section: string;
-  title?: string;
-  subtitle?: string;
-  content?: string;
-  button_text?: string;
-  button_link?: string;
-  image_url?: string;
-  updated_at?: string;
+  title?: string | null;
+  subtitle?: string | null;
+  content?: string | null;
+  button_text?: string | null;
+  button_link?: string | null;
+  image_url?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  facebook?: string | null;
+  twitter?: string | null;
+  linkedin?: string | null;
+  instagram?: string | null;
+  updated_at?: string | null;
 };
 
 const AdminContent = () => {
@@ -73,7 +79,7 @@ const AdminContent = () => {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (newContent: Omit<Content, 'id' | 'updated_at'>) => {
+    mutationFn: async (newContent: Omit<Content, 'id'>) => {
       const { data, error } = await supabase
         .from("contents")
         .insert(newContent)
