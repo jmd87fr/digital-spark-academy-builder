@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MarkdownEditor } from '@/components/ui/markdown-editor';
 
 type Content = {
   id: string;
@@ -171,7 +172,10 @@ const AdminContent = () => {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Sous-titre</label>
-                    <Textarea name="subtitle" defaultValue={homeHeroContent.subtitle || ""} />
+                    <MarkdownEditor 
+                      name="subtitle" 
+                      defaultValue={homeHeroContent.subtitle || ""}
+                    />
                   </div>
                   
                   <div>
