@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -111,7 +110,7 @@ const AdminEbooks = () => {
     console.log("Formdata recueillie:", {
       titre: formData.get('titre'),
       description: formData.get('description'),
-      categorie: formData.get('categorie'),
+      Categorie: formData.get('Categorie'),
       prix: formData.get('prix'),
     });
 
@@ -120,7 +119,7 @@ const AdminEbooks = () => {
       updates: {
         titre: formData.get('titre') as string,
         description: formData.get('description') as string,
-        Categorie: formData.get('categorie') as string,
+        Categorie: formData.get('Categorie') as string,
         prix: Number(formData.get('prix')),
       }
     });

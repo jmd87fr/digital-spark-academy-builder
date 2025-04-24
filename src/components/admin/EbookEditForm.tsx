@@ -53,7 +53,7 @@ const EbookEditForm: React.FC<EbookEditFormProps> = ({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Catégorie</label>
-            <Input name="categorie" defaultValue={ebook.Categorie || ""} />
+            <Input name="Categorie" defaultValue={ebook.Categorie || ""} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Prix</label>
