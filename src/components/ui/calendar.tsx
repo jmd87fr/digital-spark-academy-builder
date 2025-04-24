@@ -1,7 +1,7 @@
 
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import { DayPicker, type CustomComponents } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -53,9 +53,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        // Use proper capitalization for nav icons in react-day-picker v9.x
-        PrevIcon: props => <ChevronLeft className="h-4 w-4" />,
-        NextIcon: props => <ChevronRight className="h-4 w-4" />
+        // Updated to match react-day-picker v9 type definitions
+        NavigationButton: ({ label, ...buttonProps }) => 
+          label === 'previous' 
+            ? <ChevronLeft className="h-4 w-4" {...buttonProps} /> 
+            : <ChevronRight className="h-4 w-4" {...buttonProps} />
       }}
       {...props}
     />
