@@ -15,7 +15,7 @@ type Ebook = {
   titre: string;
   description: string | null;
   prix: number | null;
-  Categorie: string | null;
+  categorie: string | null;
 };
 
 type EbookCardProps = {
@@ -24,7 +24,7 @@ type EbookCardProps = {
   onEdit: () => void;
   onDelete: () => void;
   isDeletePending: boolean;
-  children?: React.ReactNode; // To allow passing the edit form as children
+  children?: React.ReactNode;
 };
 
 const EbookCard: React.FC<EbookCardProps> = ({
@@ -38,10 +38,10 @@ const EbookCard: React.FC<EbookCardProps> = ({
   <Card>
     <CardHeader>
       <CardTitle>{ebook.titre}</CardTitle>
-      <CardDescription>{ebook.Categorie}</CardDescription>
+      <CardDescription>{ebook.categorie}</CardDescription>
     </CardHeader>
     {isEditing ? (
-      children // Render form if editing, otherwise details
+      children
     ) : (
       <CardContent className="space-y-2">
         {ebook.description && (

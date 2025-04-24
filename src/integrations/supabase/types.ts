@@ -98,21 +98,21 @@ export type Database = {
       }
       ebook: {
         Row: {
-          Categorie: string | null
+          categorie: string | null
           description: string | null
           id: string
           prix: number | null
           titre: string | null
         }
         Insert: {
-          Categorie?: string | null
+          categorie?: string | null
           description?: string | null
           id?: string
           prix?: number | null
           titre?: string | null
         }
         Update: {
-          Categorie?: string | null
+          categorie?: string | null
           description?: string | null
           id?: string
           prix?: number | null

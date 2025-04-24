@@ -13,7 +13,7 @@ type Ebook = {
   titre: string;
   description: string | null;
   prix: number | null;
-  Categorie: string | null;
+  categorie: string | null;
 };
 
 type EbookEditFormProps = {
@@ -29,7 +29,6 @@ const EbookEditForm: React.FC<EbookEditFormProps> = ({
   onCancel,
   isPending,
 }) => {
-  // Fonction pour gérer la soumission du formulaire
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(e, ebook.id);
@@ -53,7 +52,7 @@ const EbookEditForm: React.FC<EbookEditFormProps> = ({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Catégorie</label>
-            <Input name="Categorie" defaultValue={ebook.Categorie || ""} />
+            <Input name="categorie" defaultValue={ebook.categorie || ""} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Prix</label>

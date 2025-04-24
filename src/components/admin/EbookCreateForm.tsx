@@ -42,7 +42,7 @@ const EbookCreateForm: React.FC<EbookCreateFormProps> = ({
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Catégorie</label>
-          <Input name="Categorie" placeholder="ebook, audiobook" />
+          <Input name="categorie" placeholder="ebook, audiobook" />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Prix</label>

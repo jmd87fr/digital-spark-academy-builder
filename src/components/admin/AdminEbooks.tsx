@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +13,7 @@ type Ebook = {
   titre: string;
   description: string | null;
   prix: number | null;
-  Categorie: string | null;
+  categorie: string | null;
 }
 
 const AdminEbooks = () => {
@@ -98,7 +99,7 @@ const AdminEbooks = () => {
     createMutation.mutate({
       titre: formData.get('titre') as string,
       description: formData.get('description') as string,
-      Categorie: formData.get('categorie') as string,
+      categorie: formData.get('categorie') as string,
       prix: Number(formData.get('prix')),
     });
   };
@@ -106,11 +107,11 @@ const AdminEbooks = () => {
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     console.log("Formdata recueillie:", {
       titre: formData.get('titre'),
       description: formData.get('description'),
-      Categorie: formData.get('Categorie'),
+      categorie: formData.get('categorie'),
       prix: formData.get('prix'),
     });
 
@@ -119,7 +120,7 @@ const AdminEbooks = () => {
       updates: {
         titre: formData.get('titre') as string,
         description: formData.get('description') as string,
-        Categorie: formData.get('Categorie') as string,
+        categorie: formData.get('categorie') as string,
         prix: Number(formData.get('prix')),
       }
     });
