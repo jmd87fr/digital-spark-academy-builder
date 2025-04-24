@@ -14,12 +14,19 @@ const Header = () => {
   const { data: isAdmin } = useQuery({
     queryKey: ['user-role', user?.id],
     queryFn: async () => {
+      if (!user?.id) return false;
+      
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', user?.id)
+        .eq('user_id', user.id)
         .single();
-      if (error) throw error;
+      
+      if (error) {
+        console.error("Error fetching user role:", error);
+        return false;
+      }
+      
       return data?.role === 'admin';
     },
     enabled: !!user,
@@ -157,4 +164,3 @@ const Header = () => {
 };
 
 export default Header;
-
