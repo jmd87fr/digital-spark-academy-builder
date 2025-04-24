@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Linkedin } from "lucide-react";
 
 type Policy = {
   id: string;
@@ -20,7 +19,6 @@ const Footer = () => {
   const { data: policies } = useQuery<Policy[]>({
     queryKey: ['footer-policies'],
     queryFn: async () => {
-      // Important: on ne ramène que les policies, pas les liens
       const { data, error } = await supabase
         .from("policies")
         .select("id, title, slug")
@@ -61,17 +59,7 @@ const Footer = () => {
                 <strong>Téléphone:</strong> +33 (0)1 23 45 67 89
               </p>
             </div>
-            <div className="mt-4">
-              <a 
-                href="https://www.linkedin.com/in/jeanmarcdoucet/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="inline-block text-gray-300 hover:text-white transition-colors"
-                aria-label="LinkedIn de Jean-Marc Doucet"
-              >
-                <Linkedin size={24} />
-              </a>
-            </div>
+            {/* Suppression du lien LinkedIn */}
           </div>
 
           <div>
@@ -105,6 +93,7 @@ const Footer = () => {
             </ul>
           </div>
 
+          {/* Le reste du code reste inchangé */}
           <div>
             <h3 className="font-bold text-lg mb-4">Newsletter</h3>
             {subscribed ? (
