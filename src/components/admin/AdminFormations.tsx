@@ -53,6 +53,7 @@ const AdminFormations = () => {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
+      console.log("Mise à jour de la formation:", id, updates);
       const { data, error } = await supabase
         .from('formations')
         .update(updates)
@@ -107,6 +108,15 @@ const AdminFormations = () => {
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    console.log("Formdata recueillie pour mise à jour formation:", {
+      titre: formData.get('titre'),
+      description: formData.get('description'),
+      theme: formData.get('theme'),
+      image_url: formData.get('image_url'),
+      objectif: formData.get('objectif'),
+      public_cible: formData.get('public_cible'),
+    });
     
     updateMutation.mutate({
       id,
@@ -233,6 +243,22 @@ const AdminFormations = () => {
                     <label className="block text-sm font-medium mb-1">Public cible</label>
                     <Textarea name="public_cible" defaultValue={formation.public_cible || ''} />
                   </div>
+
+                  <div className="flex justify-end gap-2 mt-4">
+                    <Button 
+                      type="submit"
+                      disabled={updateMutation.isPending}
+                    >
+                      {updateMutation.isPending ? "Sauvegarde..." : "Enregistrer"}
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setEditingId(null)}
+                    >
+                      Annuler
+                    </Button>
+                  </div>
                 </form>
               </CardContent>
             ) : (
@@ -260,22 +286,7 @@ const AdminFormations = () => {
             
             <CardFooter className="flex justify-end gap-2">
               {editingId === formation.id ? (
-                <>
-                  <Button 
-                    form={`edit-form-${formation.id}`} 
-                    type="submit"
-                    disabled={updateMutation.isPending}
-                  >
-                    {updateMutation.isPending ? "Sauvegarde..." : "Enregistrer"}
-                  </Button>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={() => setEditingId(null)}
-                  >
-                    Annuler
-                  </Button>
-                </>
+                null
               ) : (
                 <>
                   <Button variant="outline" onClick={() => setEditingId(formation.id)}>

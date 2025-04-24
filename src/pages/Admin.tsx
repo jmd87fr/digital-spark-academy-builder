@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminFormations from "@/components/admin/AdminFormations";
 import AdminEbooks from "@/components/admin/AdminEbooks";
 import AdminPolicies from "@/components/admin/AdminPolicies";
+import AdminContent from "@/components/admin/AdminContent";
 
 const Admin = () => {
   const { user } = useAuth();
@@ -49,6 +50,7 @@ const Admin = () => {
             <TabsTrigger value="formations">Formations</TabsTrigger>
             <TabsTrigger value="ebooks">E-books</TabsTrigger>
             <TabsTrigger value="policies">Pages légales</TabsTrigger>
+            <TabsTrigger value="content">Contenu du site</TabsTrigger>
           </TabsList>
           
           <TabsContent value="formations">
@@ -61,6 +63,10 @@ const Admin = () => {
           
           <TabsContent value="policies">
             <AdminPolicies />
+          </TabsContent>
+          
+          <TabsContent value="content">
+            <AdminContent />
           </TabsContent>
         </Tabs>
       </div>

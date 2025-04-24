@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -246,6 +247,22 @@ const AdminPolicies = () => {
                       required
                     />
                   </div>
+
+                  <div className="flex justify-end gap-2 mt-4">
+                    <Button
+                      type="submit"
+                      disabled={updateMutation.isPending}
+                    >
+                      {updateMutation.isPending ? "Sauvegarde..." : "Enregistrer"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setEditingId(null)}
+                    >
+                      Annuler
+                    </Button>
+                  </div>
                 </form>
               </CardContent>
             ) : (
@@ -264,22 +281,7 @@ const AdminPolicies = () => {
 
             <CardFooter className="flex justify-end gap-2">
               {editingId === policy.id ? (
-                <>
-                  <Button
-                    form={`edit-policy-form-${policy.id}`}
-                    type="submit"
-                    disabled={updateMutation.isPending}
-                  >
-                    {updateMutation.isPending ? "Sauvegarde..." : "Enregistrer"}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setEditingId(null)}
-                  >
-                    Annuler
-                  </Button>
-                </>
+                null
               ) : (
                 <>
                   <Button variant="outline" onClick={() => setEditingId(policy.id)}>
