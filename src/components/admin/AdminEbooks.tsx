@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -53,6 +54,7 @@ const AdminEbooks = () => {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string, updates: Partial<Ebook> }) => {
+      console.log("Mise à jour de l'ebook:", id, updates);
       const { data, error } = await supabase
         .from('ebook')
         .update(updates)
@@ -105,6 +107,13 @@ const AdminEbooks = () => {
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    console.log("Formdata recueillie:", {
+      titre: formData.get('titre'),
+      description: formData.get('description'),
+      categorie: formData.get('categorie'),
+      prix: formData.get('prix'),
+    });
 
     updateMutation.mutate({
       id,

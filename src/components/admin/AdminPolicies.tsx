@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,6 +42,7 @@ const AdminPolicies = () => {
 
   const createMutation = useMutation({
     mutationFn: async (newPolicy: Omit<Policy, 'id' | 'created_at' | 'updated_at'>) => {
+      console.log("Création d'une nouvelle politique:", newPolicy);
       const { data, error } = await supabase
         .from("policies")
         .insert(newPolicy)
@@ -62,6 +62,7 @@ const AdminPolicies = () => {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string, updates: Partial<Policy> }) => {
+      console.log("Mise à jour de la politique:", id, updates);
       const { data, error } = await supabase
         .from("policies")
         .update(updates)
@@ -100,6 +101,12 @@ const AdminPolicies = () => {
   const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    console.log("Formdata recueillie pour création:", {
+      title: formData.get('title'),
+      slug: formData.get('slug'),
+      content: formData.get('content'),
+    });
 
     createMutation.mutate({
       title: String(formData.get('title') || ''),
@@ -111,6 +118,12 @@ const AdminPolicies = () => {
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    console.log("Formdata recueillie pour mise à jour:", {
+      title: formData.get('title'),
+      slug: formData.get('slug'),
+      content: formData.get('content'),
+    });
 
     updateMutation.mutate({
       id,
