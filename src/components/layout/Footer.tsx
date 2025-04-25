@@ -129,7 +129,7 @@ const Footer = () => {
               <h3 className="font-bold text-lg mb-4">Informations légales</h3>
               <ul className="space-y-2">
                 {policies?.map((policy) => (
-                  <li key={policy.slug}>
+                  <li key={policy.id}>
                     <Link to={`/${policy.slug}`} className="text-gray-300 hover:text-white">
                       {policy.title}
                     </Link>

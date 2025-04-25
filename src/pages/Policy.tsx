@@ -19,14 +19,18 @@ const Policy = () => {
   const { data: policy, isLoading, error } = useQuery<Policy | null>({
     queryKey: ['policy', slug],
     queryFn: async () => {
+      if (!slug) return null;
+      
       const { data, error } = await supabase
         .from("policies")
         .select("*")
         .eq("slug", slug)
         .maybeSingle() as { data: Policy | null, error: any };
+      
       if (error) throw error;
       return data;
     },
+    enabled: !!slug
   });
 
   return (
@@ -44,8 +48,12 @@ const Policy = () => {
         ) : policy ? (
           <div>
             <h1 className="text-3xl font-bold mb-8">{policy.title}</h1>
-            <div className="prose max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: policy.content?.replace(/\n/g, '<br>') || "" }} />
+            <div className="prose prose-lg max-w-none">
+              {policy.content ? (
+                <div dangerouslySetInnerHTML={{ __html: policy.content.replace(/\n/g, '<br>') }} />
+              ) : (
+                <p className="text-gray-500 italic">Aucun contenu</p>
+              )}
             </div>
           </div>
         ) : (
