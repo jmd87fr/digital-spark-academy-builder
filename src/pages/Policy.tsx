@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
+import ReactMarkdown from "react-markdown";
 
 type Policy = {
   id: string;
@@ -50,7 +51,7 @@ const Policy = () => {
             <h1 className="text-3xl font-bold mb-8">{policy.title}</h1>
             <div className="prose prose-lg max-w-none">
               {policy.content ? (
-                <div dangerouslySetInnerHTML={{ __html: policy.content.replace(/\n/g, '<br>') }} />
+                <ReactMarkdown>{policy.content}</ReactMarkdown>
               ) : (
                 <p className="text-gray-500 italic">Aucun contenu</p>
               )}

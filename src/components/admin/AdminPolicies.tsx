@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
@@ -14,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { MarkdownEditor } from "@/components/ui/markdown-editor";
 
 type Policy = {
   id: string;
@@ -147,6 +147,7 @@ const AdminPolicies = () => {
     { name: "Charte IA", slug: "ai-charter" },
     { name: "Conditions Générales d'Utilisation", slug: "terms" },
     { name: "Conditions Générales de Vente", slug: "terms-of-sale" },
+    { name: "Mentions Légales", slug: "legal" },
   ];
 
   if (isLoading) {
@@ -197,8 +198,8 @@ const AdminPolicies = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Contenu</label>
-                <Textarea name="content" className="min-h-[300px]" required />
+                <label className="block text-sm font-medium mb-1">Contenu (Markdown supporté)</label>
+                <MarkdownEditor name="content" required />
               </div>
             </form>
           </CardContent>
@@ -239,11 +240,10 @@ const AdminPolicies = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Contenu</label>
-                    <Textarea
+                    <label className="block text-sm font-medium mb-1">Contenu (Markdown supporté)</label>
+                    <MarkdownEditor
                       name="content"
                       defaultValue={policy.content}
-                      className="min-h-[300px]"
                       required
                     />
                   </div>
@@ -269,11 +269,7 @@ const AdminPolicies = () => {
               <CardContent>
                 <div className="prose max-w-none">
                   <div className="max-h-[200px] overflow-y-auto border p-4 rounded-md">
-                    {policy.content ? (
-                      <div dangerouslySetInnerHTML={{ __html: policy.content.replace(/\n/g, '<br>') }} />
-                    ) : (
-                      <p className="text-gray-500 italic">Aucun contenu</p>
-                    )}
+                    <ReactMarkdown>{policy.content || ""}</ReactMarkdown>
                   </div>
                 </div>
               </CardContent>
