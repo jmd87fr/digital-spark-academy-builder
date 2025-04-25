@@ -11,7 +11,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
 
-  const { data: isAdmin } = useQuery({
+  const { data: isAdmin, isError } = useQuery({
     queryKey: ['user-role', user?.id],
     queryFn: async () => {
       if (!user?.id) return false;
@@ -36,6 +36,10 @@ const Header = () => {
     },
     enabled: !!user,
   });
+
+  if (isError) {
+    console.error("Error in isAdmin query");
+  }
 
   return (
     <header className="border-b bg-white sticky top-0 z-50">
