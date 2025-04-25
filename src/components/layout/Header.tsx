@@ -16,18 +16,23 @@ const Header = () => {
     queryFn: async () => {
       if (!user?.id) return false;
       
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (error) {
+      try {
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
+        if (error) {
+          console.error("Error fetching user role:", error);
+          return false;
+        }
+        
+        return data?.role === 'admin';
+      } catch (error) {
         console.error("Error fetching user role:", error);
         return false;
       }
-      
-      return data?.role === 'admin';
     },
     enabled: !!user,
   });
